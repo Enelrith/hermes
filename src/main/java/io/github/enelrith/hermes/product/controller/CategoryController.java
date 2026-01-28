@@ -4,8 +4,10 @@ import io.github.enelrith.hermes.product.dto.AddCategoryRequest;
 import io.github.enelrith.hermes.product.dto.CategoryDto;
 import io.github.enelrith.hermes.product.service.CategoryService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -14,6 +16,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
+@Validated
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -28,7 +31,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Integer categoryId) {
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable @Positive Integer categoryId) {
         var category = categoryService.getCategoryById(categoryId);
 
         return ResponseEntity.ok(category);
