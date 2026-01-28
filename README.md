@@ -8,13 +8,17 @@ A Spring Boot REST API e-commerce application with JWT authentication, rate limi
 - [Tech Stack](#tech-stack)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
-- [Configuration](#configuration)
 - [Database Setup](#database-setup)
 - [Running the Application](#running-the-application)
 - [API Documentation](#api-documentation)
 - [Project Structure](#project-structure)
+- [API Endpoints](#api-endpoints)
+- [Authentication Flow](#authentication-flow)
 - [Testing](#testing)
 - [Docker Deployment](#docker-deployment)
+- [Configuration Details](#configuration-details)
+- [Troubleshooting](#troubleshooting)
+- [Contact](#contact)
 
 ## Features
 
@@ -331,7 +335,7 @@ docker run -d \
 - Verify token hasn't expired
 - Check `Authorization: Bearer <token>` header format
 
-### Roadmap
+## Roadmap
 
 - [x] Initial Project
 - [x] Security, JWT Authentication & Token Rotation
