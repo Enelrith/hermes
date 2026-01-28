@@ -18,7 +18,6 @@ public class RateLimitService {
     }
 
     private Bucket createNewBucket() {
-        // New API: 10 requests per minute
         Bandwidth limit = Bandwidth.builder()
                 .capacity(5)
                 .refillIntervally(5, Duration.ofMinutes(1))
