@@ -18,6 +18,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(rateLimitInterceptor)
                 .addPathPatterns("/auth/**")
-                .addPathPatterns("/users/**");
+                .addPathPatterns("/users/**")
+                .addPathPatterns("/categories/**")
+                .addPathPatterns("/manufacturers/**");
     }
 }
