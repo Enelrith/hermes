@@ -1,0 +1,26 @@
+spring:
+  config:
+    import: "optional:file:application.properties"
+  application:
+    name: hermes
+  security:
+    jwt:
+      secret: ${JWT_SECRET}
+      expiration: ${JWT_EXPIRATION}
+      refresh-secret: ${JWT_REFRESH_SECRET}
+      refresh-expiration: ${JWT_REFRESH_EXPIRATION}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+  flyway:
+    clean-disabled: false
+    enabled: true
+    default-schema: ${DB_SCHEMA}
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+springdoc:
+  api-docs:
+    enabled: true
