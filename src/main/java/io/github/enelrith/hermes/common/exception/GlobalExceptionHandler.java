@@ -1,5 +1,7 @@
 package io.github.enelrith.hermes.common.exception;
 
+import io.github.enelrith.hermes.product.exception.CategoryAlreadyExistsException;
+import io.github.enelrith.hermes.product.exception.CategoryDoesNotExistException;
 import io.github.enelrith.hermes.security.exception.InvalidRefreshTokenException;
 import io.github.enelrith.hermes.security.exception.InvalidUserException;
 import io.github.enelrith.hermes.user.exception.EmailAlreadyInUseException;
@@ -114,6 +116,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RoleNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(RoleNotFoundException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(),
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(CategoryAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleException(CategoryAlreadyExistsException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.CONFLICT, e.getMessage(),
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(CategoryDoesNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleException(CategoryDoesNotExistException e, HttpServletRequest request) {
 
         ErrorResponse response = buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(),
                 request.getServletPath(), null);
