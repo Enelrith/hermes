@@ -11,6 +11,7 @@ import io.github.enelrith.hermes.security.entity.RefreshTokenRepository;
 import io.github.enelrith.hermes.security.exception.InvalidUserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -75,6 +76,7 @@ public class AuthService {
     }
 
     @Transactional
+    @PreAuthorize("#request.email() == authentication.name")
     public void logoutUser(LogoutRequest request) {
         RefreshToken tokenEntity = refreshTokenRepository.findByToken(request.refreshToken())
                 .orElseThrow(InvalidRefreshTokenException::new);
