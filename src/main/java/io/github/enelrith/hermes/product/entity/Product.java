@@ -1,0 +1,73 @@
+package io.github.enelrith.hermes.product.entity;
+
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.Set;
+
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
+@Table(name = "products")
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(AccessLevel.NONE)
+    private Long id;
+
+    @Column(name = "name", nullable = false, unique = true, length = 255)
+    private String name;
+
+    @Column(name = "short_description", nullable = true, length = 255)
+    private String shortDescription;
+
+    @Column(name = "long_description", columnDefinition = "TEXT", nullable = true)
+    private String longDescription;
+
+    @Column(name = "net_price", nullable = false, precision = 10, scale = 2)
+    private BigDecimal netPrice;
+
+    @Column(name = "stock_quantity", nullable = false)
+    private Integer stockQuantity;
+
+    @Column(name = "is_available", nullable = false)
+    private Boolean isAvailable;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    @CreatedDate
+    private Instant createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    @LastModifiedDate
+    private Instant updatedAt;
+
+    @Column(name = "deleted_at", nullable = true)
+    private Instant deletedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "manufacturer_id", nullable = false)
+    private Manufacturer manufacturer;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "product_tags",
+            joinColumns = @JoinColumn(name = "product_id", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "tag_id", nullable = false)
+    )
+    private Set<Tag> tags;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private Set<Review> reviews;
+}
