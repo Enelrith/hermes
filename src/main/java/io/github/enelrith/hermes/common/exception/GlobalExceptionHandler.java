@@ -10,13 +10,16 @@ import io.github.enelrith.hermes.user.exception.EmailAlreadyInUseException;
 import io.github.enelrith.hermes.user.exception.PasswordsDoNotMatchException;
 import io.github.enelrith.hermes.user.exception.RoleNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -62,10 +65,45 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(response.getStatus()).body(response);
     }
 
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleException(ConstraintViolationException e, HttpServletRequest request) {
+        Map<String, String> errors = new HashMap<>();
+        e.getConstraintViolations().forEach(error ->
+                errors.put(error.getPropertyPath().toString(), error.getMessage()));
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.BAD_REQUEST, "Invalid path variable",
+                request.getServletPath(), errors);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleException(AuthenticationException e, HttpServletRequest request) {
 
         ErrorResponse response = buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid email or password",
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleException(MethodArgumentTypeMismatchException e, HttpServletRequest request) {
+
+        String parameterName = e.getName();
+        String providedType = e.getValue() != null ? e.getValue().getClass().getSimpleName() : null;
+        String requiredType = e.getRequiredType() != null ? e.getRequiredType().getSimpleName() : null;
+        String message = "Parameter " + parameterName + " expects a " +  requiredType + " but the provided value is a " + providedType;
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.BAD_REQUEST, message,
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleException(AuthorizationDeniedException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.UNAUTHORIZED, "You are not authorized to perform this operation",
                 request.getServletPath(), null);
 
         return ResponseEntity.status(response.getStatus()).body(response);
