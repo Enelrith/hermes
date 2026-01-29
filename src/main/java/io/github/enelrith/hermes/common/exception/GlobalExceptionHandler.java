@@ -213,4 +213,22 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
+    @ExceptionHandler(TagAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleException(TagAlreadyExistsException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.CONFLICT, e.getMessage(),
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(TagDoesNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleException(TagDoesNotExistException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(),
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
 }
