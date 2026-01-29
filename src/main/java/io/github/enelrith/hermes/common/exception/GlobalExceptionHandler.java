@@ -1,9 +1,6 @@
 package io.github.enelrith.hermes.common.exception;
 
-import io.github.enelrith.hermes.product.exception.CategoryAlreadyExistsException;
-import io.github.enelrith.hermes.product.exception.CategoryDoesNotExistException;
-import io.github.enelrith.hermes.product.exception.ManufacturerAlreadyExistsException;
-import io.github.enelrith.hermes.product.exception.ManufacturerDoesNotExistException;
+import io.github.enelrith.hermes.product.exception.*;
 import io.github.enelrith.hermes.security.exception.InvalidRefreshTokenException;
 import io.github.enelrith.hermes.security.exception.InvalidUserException;
 import io.github.enelrith.hermes.user.exception.EmailAlreadyInUseException;
@@ -192,6 +189,24 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ManufacturerDoesNotExistException.class)
     public ResponseEntity<ErrorResponse> handleException(ManufacturerDoesNotExistException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(),
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleException(ProductAlreadyExistsException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.CONFLICT, e.getMessage(),
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(ProductDoesNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleException(ProductDoesNotExistException e, HttpServletRequest request) {
 
         ErrorResponse response = buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(),
                 request.getServletPath(), null);
