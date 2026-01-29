@@ -42,9 +42,6 @@ public class User {
     @Column(name = "deleted_at", nullable = true)
     private Instant deletedAt;
 
-    @OneToOne(mappedBy = "user")
-    private Customer customer;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_roles",
@@ -55,9 +52,6 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<RefreshToken> refreshTokens = new HashSet<>();
-
-    @OneToOne(mappedBy = "user")
-    private Cart cart;
 
     public void addRoleToUser(Role role) {
         if (this.roles == null) this.roles = new HashSet<>();
