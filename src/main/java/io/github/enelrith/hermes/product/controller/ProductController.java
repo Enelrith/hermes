@@ -54,4 +54,12 @@ public class ProductController {
         var productThumbnails = productService.getProductThumbnailByName(name);
         return ResponseEntity.ok(productThumbnails);
     }
+
+    @PostMapping("/{productId}/tags/{tagId}")
+    public ResponseEntity<AddTagToProductResponse> addTagToProduct(@PathVariable @Positive Long productId,
+                                                                   @PathVariable @Positive Integer tagId) {
+        var response = productService.addTagToProduct(productId, tagId);
+
+        return ResponseEntity.ok(response);
+    }
 }

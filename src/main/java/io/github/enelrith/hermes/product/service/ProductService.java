@@ -1,14 +1,13 @@
 package io.github.enelrith.hermes.product.service;
 
 import io.github.enelrith.hermes.product.dto.*;
-import io.github.enelrith.hermes.product.exception.CategoryDoesNotExistException;
-import io.github.enelrith.hermes.product.exception.ManufacturerDoesNotExistException;
-import io.github.enelrith.hermes.product.exception.ProductAlreadyExistsException;
-import io.github.enelrith.hermes.product.exception.ProductDoesNotExistException;
+import io.github.enelrith.hermes.product.exception.*;
 import io.github.enelrith.hermes.product.mapper.ProductMapper;
+import io.github.enelrith.hermes.product.mapper.TagMapper;
 import io.github.enelrith.hermes.product.repository.CategoryRepository;
 import io.github.enelrith.hermes.product.repository.ManufacturerRepository;
 import io.github.enelrith.hermes.product.repository.ProductRepository;
+import io.github.enelrith.hermes.product.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -27,9 +26,10 @@ public class ProductService {
     private final ProductMapper productMapper;
     private final CategoryRepository categoryRepository;
     private final ManufacturerRepository manufacturerRepository;
+    private final TagRepository tagRepository;
 
     private final BigDecimal currentVat = new BigDecimal("0.24");
-
+    private final TagMapper tagMapper;
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
@@ -81,5 +81,23 @@ public class ProductService {
         }
 
         return productThumbnailDtoSet;
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    public AddTagToProductResponse addTagToProduct(Long productId, Integer tagId) {
+        var product = productRepository.findById(productId).orElseThrow(ProductDoesNotExistException::new);
+        var tag = tagRepository.findById(tagId).orElseThrow(TagDoesNotExistException::new);
+        if (product.getTags().contains(tag)) throw new TagAlreadyExistsException("This product already has this tag");
+
+        product.getTags().add(tag);
+        productRepository.save(product);
+
+        List<TagDto> tagDtoList = new ArrayList<>();
+        for (var productTag : product.getTags()) {
+            var tagDto = tagMapper.toTagDto(productTag);
+            tagDtoList.add(tagDto);
+        }
+        return new AddTagToProductResponse(product.getId(), tagDtoList);
     }
 }
