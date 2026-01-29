@@ -27,7 +27,7 @@ public class ManufacturerController {
                 .path("/{id}")
                 .buildAndExpand(manufacturer.id())
                 .toUri();
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(manufacturer);
     }
 
     @GetMapping("/{id}")
