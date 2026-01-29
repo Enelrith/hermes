@@ -7,7 +7,7 @@ import io.github.enelrith.hermes.security.dto.AuthResponse;
 import io.github.enelrith.hermes.security.dto.LogoutRequest;
 import io.github.enelrith.hermes.security.dto.RefreshTokenRequest;
 import io.github.enelrith.hermes.security.entity.RefreshToken;
-import io.github.enelrith.hermes.security.entity.RefreshTokenRepository;
+import io.github.enelrith.hermes.security.repository.RefreshTokenRepository;
 import io.github.enelrith.hermes.security.exception.InvalidUserException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

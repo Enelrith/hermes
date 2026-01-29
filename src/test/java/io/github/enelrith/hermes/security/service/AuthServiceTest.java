@@ -3,7 +3,7 @@ package io.github.enelrith.hermes.security.service;
 import io.github.enelrith.hermes.security.CustomUserDetails;
 import io.github.enelrith.hermes.security.dto.*;
 import io.github.enelrith.hermes.security.entity.RefreshToken;
-import io.github.enelrith.hermes.security.entity.RefreshTokenRepository;
+import io.github.enelrith.hermes.security.repository.RefreshTokenRepository;
 import io.github.enelrith.hermes.security.exception.InvalidRefreshTokenException;
 import io.github.enelrith.hermes.security.exception.InvalidUserException;
 import io.github.enelrith.hermes.user.entity.User;

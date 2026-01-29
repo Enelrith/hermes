@@ -1,5 +1,6 @@
-package io.github.enelrith.hermes.security.entity;
+package io.github.enelrith.hermes.security.repository;
 
+import io.github.enelrith.hermes.security.entity.RefreshToken;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
