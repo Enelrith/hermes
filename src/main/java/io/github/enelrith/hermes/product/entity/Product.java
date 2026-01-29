@@ -1,5 +1,6 @@
 package io.github.enelrith.hermes.product.entity;
 
+import io.github.enelrith.hermes.cart.entity.CartItem;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -70,4 +71,7 @@ public class Product {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<Review> reviews;
+
+    @OneToOne(mappedBy = "product")
+    private CartItem cartItem;
 }

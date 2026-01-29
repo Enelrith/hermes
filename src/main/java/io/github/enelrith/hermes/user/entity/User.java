@@ -1,5 +1,6 @@
 package io.github.enelrith.hermes.user.entity;
 
+import io.github.enelrith.hermes.cart.entity.Cart;
 import io.github.enelrith.hermes.security.entity.RefreshToken;
 import jakarta.persistence.*;
 import lombok.*;
@@ -54,6 +55,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<RefreshToken> refreshTokens = new HashSet<>();
+
+    @OneToOne(mappedBy = "user")
+    private Cart cart;
 
     public void addRoleToUser(Role role) {
         if (this.roles == null) this.roles = new HashSet<>();
