@@ -71,7 +71,4 @@ public class Product {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<Review> reviews;
-
-    @OneToOne(mappedBy = "product")
-    private CartItem cartItem;
 }
