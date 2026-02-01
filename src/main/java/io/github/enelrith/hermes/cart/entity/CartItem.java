@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Entity
 @Getter
@@ -31,4 +32,8 @@ public class CartItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
+
+    public BigDecimal calculateTotalNetPrice(){
+        return this.product.getNetPrice().multiply(new BigDecimal(this.quantity)).setScale(2, RoundingMode.HALF_UP);
+    }
 }
