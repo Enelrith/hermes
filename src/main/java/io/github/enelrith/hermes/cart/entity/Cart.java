@@ -8,6 +8,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,6 +43,27 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.PERSIST)
     private Set<CartItem> cartItems = new HashSet<>();
+
+    public CartItem findCartItemByProductId(Long productId) {
+        var cartItems = this.getCartItems();
+
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getProduct().getId().equals(productId)) {
+                return cartItem;
+            }
+        }
+        return null;
+    }
+
+    public BigDecimal calculateCartGrossPrice(BigDecimal currentVat) {
+        var cartItems = this.getCartItems();
+        BigDecimal cartNetPrice = BigDecimal.ZERO;
+
+        for (var cartItem : cartItems) {
+            cartNetPrice = cartNetPrice.add(cartItem.getTotalNetPrice());
+        }
+        return cartNetPrice.add(cartNetPrice.multiply(currentVat)).setScale(2, RoundingMode.HALF_UP);
+    }
 }
