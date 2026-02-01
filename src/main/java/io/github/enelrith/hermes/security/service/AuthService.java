@@ -9,6 +9,7 @@ import io.github.enelrith.hermes.security.dto.RefreshTokenRequest;
 import io.github.enelrith.hermes.security.entity.RefreshToken;
 import io.github.enelrith.hermes.security.repository.RefreshTokenRepository;
 import io.github.enelrith.hermes.security.exception.InvalidUserException;
+import io.github.enelrith.hermes.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -99,5 +100,11 @@ public class AuthService {
         refreshTokenEntity.setUser(customUserDetails.getUser());
 
         return refreshTokenEntity;
+    }
+
+    public User getCurrentUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUser();
     }
 }
