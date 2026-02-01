@@ -3,6 +3,8 @@ spring:
     import: "optional:file:application.properties"
   application:
     name: hermes
+    finance:
+      current-vat: "0.24"
   security:
     jwt:
       secret: ${JWT_SECRET}

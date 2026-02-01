@@ -1,5 +1,8 @@
 package io.github.enelrith.hermes.common.exception;
 
+import io.github.enelrith.hermes.cart.exception.CartAlreadyExistsException;
+import io.github.enelrith.hermes.cart.exception.CartDoesNotExistException;
+import io.github.enelrith.hermes.cart.exception.InvalidCartItemException;
 import io.github.enelrith.hermes.product.exception.*;
 import io.github.enelrith.hermes.security.exception.InvalidRefreshTokenException;
 import io.github.enelrith.hermes.security.exception.InvalidUserException;
@@ -227,6 +230,33 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(TagDoesNotExistException e, HttpServletRequest request) {
 
         ErrorResponse response = buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(),
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(CartDoesNotExistException.class)
+    public ResponseEntity<ErrorResponse> handleException(CartDoesNotExistException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(),
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(InvalidCartItemException.class)
+    public ResponseEntity<ErrorResponse> handleException(InvalidCartItemException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage(),
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
+
+    @ExceptionHandler(CartAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleException(CartAlreadyExistsException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.CONFLICT, e.getMessage(),
                 request.getServletPath(), null);
 
         return ResponseEntity.status(response.getStatus()).body(response);
