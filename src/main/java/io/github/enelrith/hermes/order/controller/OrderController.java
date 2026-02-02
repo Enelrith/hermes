@@ -1,0 +1,34 @@
+package io.github.enelrith.hermes.order.controller;
+
+import io.github.enelrith.hermes.order.dto.AddOrderRequest;
+import io.github.enelrith.hermes.order.dto.OrderDto;
+import io.github.enelrith.hermes.order.service.OrderService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+
+@RestController
+@RequestMapping("/orders")
+@RequiredArgsConstructor
+@Validated
+public class OrderController {
+    private final OrderService orderService;
+
+    @PostMapping
+    public ResponseEntity<OrderDto> addOrder(@Valid @RequestBody AddOrderRequest request) {
+        var orderDto = orderService.addOrder(request);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(orderDto.id())
+                .toUri();
+        return ResponseEntity.created(location).body(orderDto);
+    }
+}
