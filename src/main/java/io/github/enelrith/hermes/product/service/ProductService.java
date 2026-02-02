@@ -13,10 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +25,6 @@ public class ProductService {
     private final CategoryRepository categoryRepository;
     private final ManufacturerRepository manufacturerRepository;
     private final TagRepository tagRepository;
-
-    private final BigDecimal currentVat = new BigDecimal("0.24");
     private final TagMapper tagMapper;
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -43,44 +39,25 @@ public class ProductService {
         var product = productMapper.toEntity(request);
         product.setCategory(category);
         product.setManufacturer(manufacturer);
-        productRepository.save(product);
+
+        productRepository.saveAndFlush(product);
 
         return productMapper.toProductFullDto(product);
     }
 
     public ProductSummaryDto getProductSummaryById(Long id) {
-        var productSummary = productRepository.findSummaryById(id).orElseThrow(ProductDoesNotExistException::new);
 
-        var netPrice = productSummary.getNetPrice();
-        var totalPrice = netPrice.add((netPrice.multiply(currentVat))).setScale(2, RoundingMode.HALF_UP);
-
-        return new ProductSummaryDto(productSummary.getId(), productSummary.getName(), productSummary.getShortDescription(),
-                totalPrice, productSummary.getIsAvailable(), productSummary.getCreatedAt());
+        return productRepository.findSummaryById(id).orElseThrow(ProductDoesNotExistException::new);
     }
 
     public ProductDescriptionDto getProductDescriptionById(Long id) {
-        var productDescription = productRepository.findDescriptionById(id).orElseThrow(ProductDoesNotExistException::new);
 
-        var netPrice = productDescription.getNetPrice();
-        var totalPrice = netPrice.add((netPrice.multiply(currentVat))).setScale(2, RoundingMode.HALF_UP);
-
-        return new ProductDescriptionDto(productDescription.getId(), productDescription.getName(), productDescription.getLongDescription(),
-                totalPrice, productDescription.getIsAvailable(), productDescription.getCreatedAt());
+        return productRepository.findDescriptionById(id).orElseThrow(ProductDoesNotExistException::new);
     }
 
-    public List<ProductThumbnailDto> getProductThumbnailByName(String name) {
-        var productThumbnails = productRepository.findAllByNameContainingIgnoreCase(name);
+    public Set<ProductThumbnailDto> getProductThumbnailByName(String name) {
 
-        List<ProductThumbnailDto> productThumbnailDtoSet = new ArrayList<>();
-
-        for (var productThumbnail : productThumbnails) {
-            var netPrice = productThumbnail.getNetPrice();
-            var totalPrice = netPrice.add((netPrice.multiply(currentVat))).setScale(2, RoundingMode.HALF_UP);
-
-            productThumbnailDtoSet.add(new ProductThumbnailDto(productThumbnail.getId(), productThumbnail.getName(), totalPrice));
-        }
-
-        return productThumbnailDtoSet;
+        return productRepository.findAllByNameContainingIgnoreCase(name);
     }
 
     @Transactional
@@ -93,11 +70,8 @@ public class ProductService {
         product.getTags().add(tag);
         productRepository.save(product);
 
-        List<TagDto> tagDtoList = new ArrayList<>();
-        for (var productTag : product.getTags()) {
-            var tagDto = tagMapper.toTagDto(productTag);
-            tagDtoList.add(tagDto);
-        }
-        return new AddTagToProductResponse(product.getId(), tagDtoList);
+        Set<TagDto> tagDtoSet = product.getTags().stream().map(tagMapper::toTagDto).collect(Collectors.toSet());
+
+        return new AddTagToProductResponse(product.getId(), tagDtoSet);
     }
 }

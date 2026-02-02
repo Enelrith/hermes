@@ -26,5 +26,9 @@ public record AddProductRequest(@Size(message = "The product name must be betwee
                                 String categoryName,
                                 @NotBlank(message = "The manufacturer name cannot be empty")
                                 @Size(min = 1, max = 255, message = "The category name must be between {min} and {max} characters long")
-                                String manufacturerName){
+                                String manufacturerName,
+                                @NotNull(message = "Vat rate cannot be null")
+                                @Digits(message = "The vat rate can contain a maximum of {integer} digits and {fraction} decimals", integer = 2, fraction = 4)
+                                @PositiveOrZero(message = "The vat rate must be a positive number or zero")
+                                BigDecimal vatRate){
 }

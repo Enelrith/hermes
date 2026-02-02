@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/products")
@@ -47,7 +47,7 @@ public class ProductController {
     }
 
     @GetMapping("/{name}/thumbnail")
-    public ResponseEntity<List<ProductThumbnailDto>> getProductThumbnails(@PathVariable
+    public ResponseEntity<Set<ProductThumbnailDto>> getProductThumbnails(@PathVariable
                                                                           @NotBlank
                                                                           @Size(min = 1, max = 50)
                                                                           String name) {

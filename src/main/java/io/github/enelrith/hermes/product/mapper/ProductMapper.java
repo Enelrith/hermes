@@ -6,36 +6,20 @@ import org.mapstruct.*;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ProductMapper {
+    // -- PRODUCT SUMMARY --
     Product toEntity(ProductSummaryDto productSummaryDto);
 
-    ProductSummaryDto toProductSummaryDto(Product product);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Product partialUpdate(ProductSummaryDto productSummaryDto, @MappingTarget Product product);
-
+    // -- PRODUCT DESCRIPTION --
     Product toEntity(ProductDescriptionDto productDescriptionDto);
 
-    ProductDescriptionDto toProductDescriptionDto(Product product);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Product partialUpdate(ProductDescriptionDto productDescriptionDto, @MappingTarget Product product);
-
+    // -- PRODUCT THUMBNAIL --
     Product toEntity(ProductThumbnailDto productThumbnailDto);
 
-    ProductThumbnailDto toProductThumbnailDto(Product product);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Product partialUpdate(ProductThumbnailDto productThumbnailDto, @MappingTarget Product product);
-
+    // -- ADD PRODUCT REQUEST --
     Product toEntity(AddProductRequest addProductRequest);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Product partialUpdate(AddProductRequest addProductRequest, @MappingTarget Product product);
-
+    // -- PRODUCT FULL --
     Product toEntity(ProductFullDto productFullDto);
 
     ProductFullDto toProductFullDto(Product product);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    Product partialUpdate(ProductFullDto productFullDto, @MappingTarget Product product);
 }
