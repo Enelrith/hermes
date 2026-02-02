@@ -79,4 +79,9 @@ public class Product {
     public Double getAverageRating() {
         return reviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
     }
+
+    @Transient
+    public BigDecimal getGrossPrice() {
+        return netPrice.add(netPrice.multiply(vatRate)).setScale(2, RoundingMode.HALF_UP);
+    }
 }

@@ -8,6 +8,6 @@ import java.time.Instant;
 import java.util.Set;
 
 @Builder
-public record CartDto(Long id, Instant createdAt, Instant updatedAt, CartStatus status, BigDecimal cartTotalPrice,
+public record CartDto(Long id, Instant createdAt, Instant updatedAt, CartStatus status, BigDecimal cartGrossPrice,
                       Set<CartItemDto> cartItems){
 }

@@ -15,6 +15,7 @@ public interface ProductMapper {
     // -- PRODUCT THUMBNAIL --
     Product toEntity(ProductThumbnailDto productThumbnailDto);
 
+    ProductThumbnailDto toProductThumbnailDto(Product product);
     // -- ADD PRODUCT REQUEST --
     Product toEntity(AddProductRequest addProductRequest);
 

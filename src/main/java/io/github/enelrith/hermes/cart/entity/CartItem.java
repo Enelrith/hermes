@@ -33,7 +33,15 @@ public class CartItem {
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
+    @Transient
     public BigDecimal calculateTotalNetPrice(){
-        return this.product.getNetPrice().multiply(new BigDecimal(this.quantity)).setScale(2, RoundingMode.HALF_UP);
+        return product.getNetPrice().multiply(new BigDecimal(quantity)).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    @Transient
+    public BigDecimal getTotalGrossPrice() {
+        var productGrossPrice = product.getGrossPrice();
+
+        return productGrossPrice.multiply(new BigDecimal(quantity)).setScale(2, RoundingMode.HALF_UP);
     }
 }

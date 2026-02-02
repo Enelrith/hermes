@@ -7,8 +7,12 @@ import org.mapstruct.*;
 
 import java.math.BigDecimal;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING,
+        uses = CartItemMapper.class)
 public interface CartMapper {
     Cart toEntity(CartDto cartDto);
+
+    CartDto toCartDto(Cart cart);
+
     Cart toEntity(AddCartRequest addCartRequest);
 }

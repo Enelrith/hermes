@@ -9,7 +9,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,24 +45,21 @@ public class Cart {
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.PERSIST)
     private Set<CartItem> cartItems = new HashSet<>();
 
+    @Transient
     public CartItem findCartItemByProductId(Long productId) {
-        var cartItems = this.getCartItems();
+        var cartItems = getCartItems();
 
-        for (CartItem cartItem : cartItems) {
-            if (cartItem.getProduct().getId().equals(productId)) {
-                return cartItem;
-            }
-        }
-        return null;
+        return cartItems.stream()
+                .filter(cartItem -> cartItem.getProduct().getId()
+                .equals(productId))
+                .findFirst()
+                .orElse(null);
     }
 
-    public BigDecimal calculateCartGrossPrice(BigDecimal currentVat) {
-        var cartItems = this.getCartItems();
-        BigDecimal cartNetPrice = BigDecimal.ZERO;
+    @Transient
+    public BigDecimal getCartGrossPrice() {
+        var cartItems = getCartItems();
 
-        for (var cartItem : cartItems) {
-            cartNetPrice = cartNetPrice.add(cartItem.getTotalNetPrice());
-        }
-        return cartNetPrice.add(cartNetPrice.multiply(currentVat)).setScale(2, RoundingMode.HALF_UP);
+        return cartItems.stream().map(CartItem::getTotalGrossPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

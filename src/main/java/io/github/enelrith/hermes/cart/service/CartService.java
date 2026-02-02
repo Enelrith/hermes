@@ -3,39 +3,28 @@ package io.github.enelrith.hermes.cart.service;
 import io.github.enelrith.hermes.cart.dto.AddCartItemRequest;
 import io.github.enelrith.hermes.cart.dto.AddCartRequest;
 import io.github.enelrith.hermes.cart.dto.CartDto;
-import io.github.enelrith.hermes.cart.dto.CartItemDto;
-import io.github.enelrith.hermes.cart.entity.Cart;
 import io.github.enelrith.hermes.cart.entity.CartItem;
 import io.github.enelrith.hermes.cart.exception.CartDoesNotExistException;
 import io.github.enelrith.hermes.cart.exception.InvalidCartItemException;
 import io.github.enelrith.hermes.cart.mapper.CartMapper;
 import io.github.enelrith.hermes.cart.repository.CartRepository;
 import io.github.enelrith.hermes.common.enums.CartStatus;
-import io.github.enelrith.hermes.product.dto.ProductThumbnailDto;
 import io.github.enelrith.hermes.product.entity.Product;
 import io.github.enelrith.hermes.product.exception.ProductDoesNotExistException;
 import io.github.enelrith.hermes.product.repository.ProductRepository;
 import io.github.enelrith.hermes.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CartService {
-    private final CartRepository cartRepository;
-    private final CartMapper cartMapper;
     private final AuthService authService;
     private final ProductRepository productRepository;
-
-    @Value("${spring.application.finance.current-vat}")
-    private BigDecimal currentVat;
+    private final CartRepository cartRepository;
+    private final CartMapper cartMapper;
 
     @Transactional
     public CartDto addCart() {
@@ -46,7 +35,7 @@ public class CartService {
 
         var savedCart = cartRepository.save(cart);
 
-        return buildCartDto(savedCart);
+        return cartMapper.toCartDto(savedCart);
     }
 
     @Transactional
@@ -63,8 +52,7 @@ public class CartService {
         cart.getCartItems().add(cartItem);
 
         cartRepository.flush();
-
-        return buildCartDto(cart);
+        return cartMapper.toCartDto(cart);
     }
 
     @Transactional
@@ -80,16 +68,15 @@ public class CartService {
             cartItem.setQuantity(cartItem.getQuantity() + request.quantity());
         }
         cartItem.setTotalNetPrice(cartItem.calculateTotalNetPrice());
-        cart.calculateCartGrossPrice(cartItem.getTotalNetPrice());
 
-        return buildCartDto(cart);
+        return cartMapper.toCartDto(cart);
     }
 
     public CartDto getCart() {
         var user = authService.getCurrentUser();
         var cart = cartRepository.findByUser_Id(user.getId()).orElseThrow(CartDoesNotExistException::new);
 
-        return buildCartDto(cart);
+        return cartMapper.toCartDto(cart);
     }
 
     private CartItem buildCartItem(Integer quantity, Product product) {
@@ -99,32 +86,5 @@ public class CartService {
         cartItem.setTotalNetPrice(cartItem.calculateTotalNetPrice());
 
         return cartItem;
-    }
-
-    private CartDto buildCartDto(Cart cart) {
-        Set<CartItemDto> cartItemDtoSet = new HashSet<>();
-
-        for (var cartItem : cart.getCartItems()) {
-            var cartItemDto = new CartItemDto(
-                    cartItem.getId(),
-                    cartItem.getQuantity(),
-                    cartItem.getTotalNetPrice(),
-                    new ProductThumbnailDto(
-                            cartItem.getProduct().getId(),
-                            cartItem.getProduct().getName(),
-                            cartItem.getProduct().getNetPrice()
-                    )
-            );
-            cartItemDtoSet.add(cartItemDto);
-        }
-
-        return CartDto.builder()
-                .id(cart.getId())
-                .createdAt(cart.getCreatedAt())
-                .updatedAt(cart.getUpdatedAt())
-                .status(cart.getStatus())
-                .cartTotalPrice(cart.calculateCartGrossPrice(currentVat))
-                .cartItems(cartItemDtoSet)
-                .build();
     }
 }
