@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 import java.util.Set;
 
@@ -60,6 +61,9 @@ public class Product {
     @JoinColumn(name = "manufacturer_id", nullable = false)
     private Manufacturer manufacturer;
 
+    @Column(name = "vat_rate", nullable = false, precision = 6, scale = 4)
+    private BigDecimal vatRate;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "product_tags",
@@ -75,5 +79,4 @@ public class Product {
     public Double getAverageRating() {
         return reviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
     }
-
 }
