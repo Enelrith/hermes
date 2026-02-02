@@ -33,9 +33,6 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final AuthService authService;
 
-    @Value("${spring.application.finance.current-vat}")
-    private BigDecimal vatRate;
-
     @Transactional
     public OrderDto addOrder(AddOrderRequest request) {
         var user = authService.getCurrentUser();
@@ -63,7 +60,7 @@ public class OrderService {
                     orderItem.setProduct(cartItem.getProduct());
                     orderItem.setQuantity(cartItem.getQuantity());
                     orderItem.setUnitNetPrice(cartItem.getProduct().getNetPrice());
-                    orderItem.setTaxRate(vatRate);
+                    orderItem.setTaxRate(cartItem.getProduct().getVatRate());
                     orderItem.setUnitShippingPrice(orderItem.getUnitShippingNetPrice());
                     orderItem.setOrder(order);
                     return orderItem;
