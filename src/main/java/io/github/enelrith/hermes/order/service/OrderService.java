@@ -48,6 +48,13 @@ public class OrderService {
         return orderMapper.toOrderDto(order);
     }
 
+    public Set<OrderDto> getAllOrders() {
+        var user = authService.getCurrentUser();
+        var orders = orderRepository.findAllByUser_Id(user.getId());
+
+        return orders.stream().map(orderMapper::toOrderDto).collect(Collectors.toSet());
+    }
+
     private Order buildOrderEntity(AddOrderRequest request, Cart cart, User user) {
         Order order = new Order();
         Set<OrderItem> orderItems = cart.getCartItems().stream()
