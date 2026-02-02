@@ -261,4 +261,13 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(response.getStatus()).body(response);
     }
+
+    @ExceptionHandler(ReviewAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleException(ReviewAlreadyExistsException e, HttpServletRequest request) {
+
+        ErrorResponse response = buildErrorResponse(HttpStatus.CONFLICT, e.getMessage(),
+                request.getServletPath(), null);
+
+        return ResponseEntity.status(response.getStatus()).body(response);
+    }
 }

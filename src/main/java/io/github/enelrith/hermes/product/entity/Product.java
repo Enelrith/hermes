@@ -21,7 +21,6 @@ import java.util.Set;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "name", nullable = false, unique = true, length = 255)
@@ -71,4 +70,10 @@ public class Product {
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private Set<Review> reviews;
+
+    @Transient
+    public Double getAverageRating() {
+        return reviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
+    }
+
 }

@@ -1,6 +1,7 @@
 package io.github.enelrith.hermes.user.entity;
 
 import io.github.enelrith.hermes.order.entity.Order;
+import io.github.enelrith.hermes.product.entity.Review;
 import io.github.enelrith.hermes.security.entity.RefreshToken;
 import jakarta.persistence.*;
 import lombok.*;
@@ -62,4 +63,7 @@ public class User {
         if (role.getUsers() == null) role.setUsers(new HashSet<>());
         role.getUsers().add(this);
     }
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Review> reviews = new HashSet<>();
 }
