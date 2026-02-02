@@ -1,6 +1,6 @@
 package io.github.enelrith.hermes.user.entity;
 
-import io.github.enelrith.hermes.cart.entity.Cart;
+import io.github.enelrith.hermes.order.entity.Order;
 import io.github.enelrith.hermes.security.entity.RefreshToken;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,7 +22,6 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Long id;
 
     @Column(name = "email", nullable = false, unique = true, length = 255)
@@ -52,6 +51,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<RefreshToken> refreshTokens = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Set<Order> orders = new HashSet<>();
 
     public void addRoleToUser(Role role) {
         if (this.roles == null) this.roles = new HashSet<>();
