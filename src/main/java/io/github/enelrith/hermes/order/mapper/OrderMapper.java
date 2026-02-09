@@ -15,8 +15,8 @@ public interface OrderMapper {
         order.getOrderItems().forEach(orderItem -> orderItem.setOrder(order));
     }
 
-    @Mapping(source = "user.id", target = "userId")
-    OrderDto toOrderDto(Order order);
+    @Mapping(source = "order.user.id", target = "userId")
+    OrderDto toOrderDto(Order order, String successUrl, String cancelUrl);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(source = "userId", target = "user.id")
