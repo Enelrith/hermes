@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ManufacturerService {
@@ -31,5 +34,11 @@ public class ManufacturerService {
         var manufacturer = manufacturerRepository.findById(id).orElseThrow(ManufacturerDoesNotExistException::new);
 
         return manufacturerMapper.toManufacturerDto(manufacturer);
+    }
+
+    public Set<ManufacturerDto> getAllManufacturers() {
+        var manufacturers = manufacturerRepository.findAll();
+
+        return manufacturers.stream().map(manufacturerMapper::toManufacturerDto).collect(Collectors.toSet());
     }
 }

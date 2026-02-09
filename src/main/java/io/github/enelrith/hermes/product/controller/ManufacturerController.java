@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/manufacturers")
@@ -35,5 +36,12 @@ public class ManufacturerController {
         var manufacturer = manufacturerService.getManufacturerById(id);
 
         return ResponseEntity.ok(manufacturer);
+    }
+
+    @GetMapping
+    public ResponseEntity<Set<ManufacturerDto>> getAllManufacturers() {
+        var manufacturers = manufacturerService.getAllManufacturers();
+
+        return ResponseEntity.ok(manufacturers);
     }
 }

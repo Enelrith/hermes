@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/categories")
@@ -35,5 +36,12 @@ public class CategoryController {
         var category = categoryService.getCategoryById(categoryId);
 
         return ResponseEntity.ok(category);
+    }
+
+    @GetMapping
+    public ResponseEntity<Set<CategoryDto>> getAllCategories() {
+        var categories = categoryService.getAllCategories();
+
+        return ResponseEntity.ok(categories);
     }
 }

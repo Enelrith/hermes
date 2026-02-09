@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Set;
 
 /**
  * DTO for {@link io.github.enelrith.hermes.product.entity.Product}

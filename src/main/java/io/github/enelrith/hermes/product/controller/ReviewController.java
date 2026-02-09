@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/reviews")
@@ -28,5 +29,19 @@ public class ReviewController {
                 .buildAndExpand(reviewDto.id())
                 .toUri();
         return ResponseEntity.created(location).body(reviewDto);
+    }
+
+    @GetMapping("/products/{productId}")
+    public ResponseEntity<Set<ReviewDto>> getReviewsByProductId(@PathVariable @Positive Long productId) {
+        var reviews = reviewService.getReviewsByProductId(productId);
+
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<Set<ReviewDto>> getReviewsByUserId(@PathVariable @Positive Long userId) {
+        var reviews = reviewService.getReviewsByUserId(userId);
+
+        return ResponseEntity.ok(reviews);
     }
 }

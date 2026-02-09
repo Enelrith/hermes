@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -35,5 +38,17 @@ public class ReviewService {
         reviewRepository.saveAndFlush(review);
 
         return reviewMapper.toReviewDto(review);
+    }
+
+    public Set<ReviewDto> getReviewsByUserId(Long userId) {
+        var reviews = reviewRepository.findAllByUser_Id(userId);
+
+        return reviews.stream().map(reviewMapper::toReviewDto).collect(Collectors.toSet());
+    }
+
+    public Set<ReviewDto> getReviewsByProductId(Long productId) {
+        var reviews = reviewRepository.findAllByProduct_Id(productId);
+
+        return reviews.stream().map(reviewMapper::toReviewDto).collect(Collectors.toSet());
     }
 }

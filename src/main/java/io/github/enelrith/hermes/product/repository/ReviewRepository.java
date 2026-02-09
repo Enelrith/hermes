@@ -8,4 +8,8 @@ import java.util.Set;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByProduct_Id(Long id);
+
+    Set<Review> findAllByUser_Id(Long userId);
+
+    Set<Review> findAllByProduct_Id(Long productId);
 }

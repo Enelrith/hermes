@@ -4,7 +4,9 @@ import io.github.enelrith.hermes.product.dto.*;
 import io.github.enelrith.hermes.product.entity.Product;
 import org.mapstruct.*;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING, uses = {
+        CategoryMapper.class, ManufacturerMapper.class, TagMapper.class
+})
 public interface ProductMapper {
     // -- PRODUCT SUMMARY --
     Product toEntity(ProductSummaryDto productSummaryDto);

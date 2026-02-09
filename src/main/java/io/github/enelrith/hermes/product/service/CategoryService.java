@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -24,6 +27,12 @@ public class CategoryService {
         categoryRepository.save(category);
 
         return categoryMapper.toCategoryDto(category);
+    }
+
+    public Set<CategoryDto> getAllCategories() {
+        var categories = categoryRepository.findAll();
+
+        return categories.stream().map(categoryMapper::toCategoryDto).collect(Collectors.toSet());
     }
 
     public CategoryDto getCategoryById(Integer categoryId) {
