@@ -144,7 +144,7 @@
         <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
-            <version>31.1.0</version>
+            <version>31.3.0</version>
         </dependency>
         <!-- Test Dependencies -->
         <dependency>

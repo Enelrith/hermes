@@ -53,7 +53,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/tags/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/reviews/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/order-success").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/order-fail").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/stripe-webhook").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->

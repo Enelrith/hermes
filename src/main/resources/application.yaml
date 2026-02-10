@@ -27,3 +27,4 @@ springdoc:
     enabled: true
 stripe:
   secret-key: ${STRIPE_SECRET_KEY}
+  webhook-secret-key: ${STRIPE_WEBHOOK_SECRET_KEY}
