@@ -9,6 +9,9 @@ import io.github.enelrith.hermes.product.repository.ManufacturerRepository;
 import io.github.enelrith.hermes.product.repository.ProductRepository;
 import io.github.enelrith.hermes.product.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,9 +58,9 @@ public class ProductService {
         return productRepository.findDescriptionById(id).orElseThrow(ProductDoesNotExistException::new);
     }
 
-    public Set<ProductThumbnailDto> getProductThumbnailByName(String name) {
+    public Page<ProductThumbnailDto> getProductThumbnailByName(String name, Pageable pageable) {
 
-        return productRepository.findAllByNameContainingIgnoreCase(name);
+        return productRepository.findAllByNameContainingIgnoreCase(name, pageable);
     }
 
     @Transactional

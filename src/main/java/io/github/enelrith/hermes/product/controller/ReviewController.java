@@ -6,6 +6,10 @@ import io.github.enelrith.hermes.product.service.ReviewService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,15 +36,17 @@ public class ReviewController {
     }
 
     @GetMapping("/products/{productId}")
-    public ResponseEntity<Set<ReviewDto>> getReviewsByProductId(@PathVariable @Positive Long productId) {
-        var reviews = reviewService.getReviewsByProductId(productId);
+    public ResponseEntity<Page<ReviewDto>> getReviewsByProductId(@PathVariable @Positive Long productId, Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), 10, Sort.by("rating").descending());
+        var reviews = reviewService.getReviewsByProductId(productId, pageable);
 
         return ResponseEntity.ok(reviews);
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<Set<ReviewDto>> getReviewsByUserId(@PathVariable @Positive Long userId) {
-        var reviews = reviewService.getReviewsByUserId(userId);
+    public ResponseEntity<Page<ReviewDto>> getReviewsByUserId(@PathVariable @Positive Long userId, Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), 10, Sort.by("rating").descending());
+        var reviews = reviewService.getReviewsByUserId(userId, pageable);
 
         return ResponseEntity.ok(reviews);
     }

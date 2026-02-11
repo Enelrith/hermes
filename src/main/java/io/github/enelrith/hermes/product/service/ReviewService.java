@@ -9,6 +9,8 @@ import io.github.enelrith.hermes.product.repository.ProductRepository;
 import io.github.enelrith.hermes.product.repository.ReviewRepository;
 import io.github.enelrith.hermes.security.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,15 +42,15 @@ public class ReviewService {
         return reviewMapper.toReviewDto(review);
     }
 
-    public Set<ReviewDto> getReviewsByUserId(Long userId) {
-        var reviews = reviewRepository.findAllByUser_Id(userId);
+    public Page<ReviewDto> getReviewsByUserId(Long userId, Pageable pageable) {
+        var reviews = reviewRepository.findAllByUser_Id(userId, pageable);
 
-        return reviews.stream().map(reviewMapper::toReviewDto).collect(Collectors.toSet());
+        return reviews.map(reviewMapper::toReviewDto);
     }
 
-    public Set<ReviewDto> getReviewsByProductId(Long productId) {
-        var reviews = reviewRepository.findAllByProduct_Id(productId);
+    public Page<ReviewDto> getReviewsByProductId(Long productId, Pageable pageable) {
+        var reviews = reviewRepository.findAllByProduct_Id(productId, pageable);
 
-        return reviews.stream().map(reviewMapper::toReviewDto).collect(Collectors.toSet());
+        return reviews.map(reviewMapper::toReviewDto);
     }
 }

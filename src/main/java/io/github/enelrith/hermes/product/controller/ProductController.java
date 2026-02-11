@@ -7,13 +7,16 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/products")
@@ -47,11 +50,13 @@ public class ProductController {
     }
 
     @GetMapping("/{name}/thumbnail")
-    public ResponseEntity<Set<ProductThumbnailDto>> getProductThumbnails(@PathVariable
+    public ResponseEntity<Page<ProductThumbnailDto>> getProductThumbnails(@PathVariable
                                                                           @NotBlank
                                                                           @Size(min = 1, max = 50)
-                                                                          String name) {
-        var productThumbnails = productService.getProductThumbnailByName(name);
+                                                                          String name,
+                                                                          Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), 10, Sort.by("name").ascending());
+        var productThumbnails = productService.getProductThumbnailByName(name, pageable);
         return ResponseEntity.ok(productThumbnails);
     }
 
