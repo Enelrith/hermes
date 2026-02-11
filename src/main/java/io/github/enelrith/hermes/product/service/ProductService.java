@@ -8,13 +8,15 @@ import io.github.enelrith.hermes.product.repository.CategoryRepository;
 import io.github.enelrith.hermes.product.repository.ManufacturerRepository;
 import io.github.enelrith.hermes.product.repository.ProductRepository;
 import io.github.enelrith.hermes.product.repository.TagRepository;
+import io.github.enelrith.hermes.product.specification.ProductSpecifications;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Validated
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
@@ -58,9 +61,14 @@ public class ProductService {
         return productRepository.findDescriptionById(id).orElseThrow(ProductDoesNotExistException::new);
     }
 
-    public Page<ProductThumbnailDto> getProductThumbnailByName(String name, Pageable pageable) {
+    public Page<ProductThumbnailDto> getProductThumbnailsBySpecifications(ProductFilters filters, Pageable pageable) {
+        var spec = Specification.where(ProductSpecifications.containsName(filters.name())
+                        .and(ProductSpecifications.hasMinPrice(filters.minPrice()))
+                        .and(ProductSpecifications.hasMaxPrice(filters.maxPrice())));
 
-        return productRepository.findAllByNameContainingIgnoreCase(name, pageable);
+        var products = productRepository.findAll(spec, pageable);
+
+        return products.map(productMapper::toProductThumbnailDto);
     }
 
     @Transactional

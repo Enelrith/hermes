@@ -3,6 +3,7 @@ package io.github.enelrith.hermes.product.entity;
 import io.github.enelrith.hermes.cart.entity.CartItem;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -79,6 +80,9 @@ public class Product {
     public Double getAverageRating() {
         return reviews.stream().mapToInt(Review::getRating).average().orElse(0.0);
     }
+
+    @Formula("net_price + (net_price * vat_rate)")
+    private BigDecimal grossPrice;
 
     @Transient
     public BigDecimal getGrossPrice() {

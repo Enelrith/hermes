@@ -3,9 +3,7 @@ package io.github.enelrith.hermes.product.controller;
 import io.github.enelrith.hermes.product.dto.*;
 import io.github.enelrith.hermes.product.service.ProductService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,14 +47,11 @@ public class ProductController {
         return ResponseEntity.ok(productDescriptionDto);
     }
 
-    @GetMapping("/{name}/thumbnail")
-    public ResponseEntity<Page<ProductThumbnailDto>> getProductThumbnails(@PathVariable
-                                                                          @NotBlank
-                                                                          @Size(min = 1, max = 50)
-                                                                          String name,
-                                                                          Pageable pageable) {
+    @GetMapping("/thumbnail")
+    public ResponseEntity<Page<ProductThumbnailDto>> getProductThumbnails(@Valid ProductFilters filters, Pageable pageable) {
+
         pageable = PageRequest.of(pageable.getPageNumber(), 10, Sort.by("name").ascending());
-        var productThumbnails = productService.getProductThumbnailByName(name, pageable);
+        var productThumbnails = productService.getProductThumbnailsBySpecifications(filters, pageable);
         return ResponseEntity.ok(productThumbnails);
     }
 
